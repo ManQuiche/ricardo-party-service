@@ -1,0 +1,94 @@
+# Default values for auth-service.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: manquiche/ricardo-auth-service
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+configs:
+  DB_HOST: "cockroachdb-public.ricardo-dmz.svc.cluster.local"
+  DB_PORT: "26257"
+  PORT: "80"
+  URL: "localhost"
+  DB_PASSWORD: ""
+  DB_USER: "root"
+  ACCESS_SECRET: "wnECkZYYNHHLYxGrS9TR1uuNZNQiVSgf5qSYlmnZXIO4cPMzz4CQ0U7dwGa5gjWn2KgMKmh4MGoqkRaVFFXlSPuTKR1vfJNBw5D/L9zDKmOcdgjdKPMGmr0u7h6p2R4OdXWn6FERfRsOmNSjneKSa4jG0dr+c0UTWfe2n/mMV4WR213umdKV9WcMQTX6Cx67LX5Z6yGDgFM6B2tr704yvzuwmWZvfQC+hacomTVSvDciI+zUsEDbuuzFfeacv+p2wKqhpmUEyoDqfRKFXqTm2/AKxVnUHyiGAEyI2lSdnz20mVVX/HO08qsb4q4vhMrPtDtfOPC1dVobhfWOI4CXWw=="
+  REFRESH_SECRET: "5ohcPtNzLdbRVpY4W1lk7i1P4yc5M+KoHyun6vmMy4Oq4DXk4JsMjRuaPNrADU0OdWWtAV4iaZSPYB67lCGjriPGsEjGZZyoUsI1IV7wzLSdD0iAHDeqUIg0A8jhQVr6aEu9mikrOv5gvvHmFK498foRCDWu7GAJR8Ja3Elim5WTn/BJgHRITHFHlWMHJvqpzy4nM2wfD041C+V595dxYE2/BlQ9zOJz/TK6lQFXEF9C1P+ylKO8mfRWZGkKJwH1W0Xj6BSZNYCzPnRyE6XSjnmXC9mofkl4cml3Sc36vT/REpBeIvuRijSsgMl72h1nSLCNRY/d5hk1FaZdX5ADqw=="
+  DEBUG: "true"
+  NO_FIREBASE: "true"
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: dmz.ricardo.net
+      paths:
+        - path: /auth
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
