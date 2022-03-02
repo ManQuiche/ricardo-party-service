@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"ricardo/party-service/internal/driving/http/party"
 )
 
 var (
@@ -17,6 +18,14 @@ func initRoutes() {
 		context.Status(http.StatusOK)
 	})
 
+	partyController := party.NewController(partyService)
+
+	partyGroup := router.Group("/party")
+	partyGroup.GET("", partyController.Get)
+	partyGroup.GET("/:user_id", partyController.GetForUser)
+	partyGroup.POST("", partyController.Create)
+	partyGroup.PATCH("", partyController.Update)
+	partyGroup.DELETE("", partyController.Delete)
 }
 
 func ServeHTTP() {
