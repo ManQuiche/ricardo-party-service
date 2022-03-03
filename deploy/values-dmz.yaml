@@ -21,10 +21,7 @@ configs:
   URL: "localhost"
   DB_PASSWORD: ""
   DB_USER: "root"
-  ACCESS_SECRET: "wnECkZYYNHHLYxGrS9TR1uuNZNQiVSgf5qSYlmnZXIO4cPMzz4CQ0U7dwGa5gjWn2KgMKmh4MGoqkRaVFFXlSPuTKR1vfJNBw5D/L9zDKmOcdgjdKPMGmr0u7h6p2R4OdXWn6FERfRsOmNSjneKSa4jG0dr+c0UTWfe2n/mMV4WR213umdKV9WcMQTX6Cx67LX5Z6yGDgFM6B2tr704yvzuwmWZvfQC+hacomTVSvDciI+zUsEDbuuzFfeacv+p2wKqhpmUEyoDqfRKFXqTm2/AKxVnUHyiGAEyI2lSdnz20mVVX/HO08qsb4q4vhMrPtDtfOPC1dVobhfWOI4CXWw=="
-  REFRESH_SECRET: "5ohcPtNzLdbRVpY4W1lk7i1P4yc5M+KoHyun6vmMy4Oq4DXk4JsMjRuaPNrADU0OdWWtAV4iaZSPYB67lCGjriPGsEjGZZyoUsI1IV7wzLSdD0iAHDeqUIg0A8jhQVr6aEu9mikrOv5gvvHmFK498foRCDWu7GAJR8Ja3Elim5WTn/BJgHRITHFHlWMHJvqpzy4nM2wfD041C+V595dxYE2/BlQ9zOJz/TK6lQFXEF9C1P+ylKO8mfRWZGkKJwH1W0Xj6BSZNYCzPnRyE6XSjnmXC9mofkl4cml3Sc36vT/REpBeIvuRijSsgMl72h1nSLCNRY/d5hk1FaZdX5ADqw=="
   DEBUG: "true"
-  NO_FIREBASE: "true"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -61,7 +58,7 @@ ingress:
   hosts:
     - host: dmz.ricardo.net
       paths:
-        - path: /auth
+        - path: /party-service
           pathType: ImplementationSpecific
   tls: []
   #  - secretName: chart-example-tls
