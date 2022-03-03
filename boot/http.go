@@ -22,7 +22,8 @@ func initRoutes() {
 
 	partyGroup := router.Group("/party")
 	partyGroup.GET("", partyController.Get)
-	partyGroup.GET("/:user_id", partyController.GetForUser)
+	partyGroup.GET("/:party_id", partyController.GetOne)
+	//partyGroup.GET("/mine", partyController.GetMine)
 	partyGroup.POST("", partyController.Create)
 	partyGroup.PATCH("", partyController.Update)
 	partyGroup.DELETE("", partyController.Delete)

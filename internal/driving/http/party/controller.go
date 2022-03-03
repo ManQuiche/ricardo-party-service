@@ -13,7 +13,8 @@ type Controller interface {
 	Create(gtx *gin.Context)
 	Update(gtx *gin.Context)
 	Get(gtx *gin.Context)
-	GetForUser(gtx *gin.Context)
+	GetOne(gtx *gin.Context)
+	//Mine(gtx *gin.Context)
 	Delete(gtx *gin.Context)
 }
 
@@ -27,7 +28,11 @@ func NewController(service party.Service) Controller {
 
 func (c controller) Create(gtx *gin.Context) {
 	var cpr entities.CreatePartyRequest
-	_ = gtx.ShouldBindJSON(&cpr)
+	err := gtx.ShouldBindJSON(&cpr)
+	if err != nil {
+		_ = errors2.GinErrorHandler(gtx, err, http.StatusBadRequest)
+		return
+	}
 
 	p := entities.Party{
 		Name:   cpr.Name,
@@ -44,7 +49,11 @@ func (c controller) Create(gtx *gin.Context) {
 
 func (c controller) Update(gtx *gin.Context) {
 	var upr entities.UpdatePartyRequest
-	_ = gtx.ShouldBindJSON(&upr)
+	err := gtx.ShouldBindJSON(&upr)
+	if err != nil {
+		_ = errors2.GinErrorHandler(gtx, err, http.StatusBadRequest)
+		return
+	}
 
 	p := entities.Party{
 		Model: gorm.Model{
@@ -65,9 +74,19 @@ func (c controller) Update(gtx *gin.Context) {
 
 func (c controller) Get(gtx *gin.Context) {
 	var gpr entities.GetPartyRequest
-	_ = gtx.ShouldBindJSON(&gpr)
+	err := gtx.ShouldBindJSON(&gpr)
+	if err != nil {
+		_ = errors2.GinErrorHandler(gtx, err, http.StatusBadRequest)
+		return
+	}
 
-	parties, err := c.service.GetAll(gtx.Request.Context())
+	var parties []entities.Party
+	if gpr.UserID != 0 {
+		parties, err = c.service.GetAllForUser(gtx.Request.Context(), gpr.UserID)
+	} else {
+		parties, err = c.service.GetAll(gtx.Request.Context())
+	}
+
 	if err != nil {
 		_ = errors2.GinErrorHandler(gtx, err, http.StatusInternalServerError)
 		return
@@ -76,12 +95,15 @@ func (c controller) Get(gtx *gin.Context) {
 	gtx.JSON(http.StatusOK, parties)
 }
 
-func (c controller) GetForUser(gtx *gin.Context) {
+func (c controller) GetOne(gtx *gin.Context) {
 	var gpr entities.GetPartyRequest
-	_ = gtx.ShouldBindJSON(&gpr)
+	err := gtx.ShouldBindJSON(&gpr)
+	if err != nil {
+		_ = errors2.GinErrorHandler(gtx, err, http.StatusBadRequest)
+		return
+	}
 
-	userID := gtx.GetUint("user_id")
-	parties, err := c.service.GetAllForUser(gtx.Request.Context(), userID)
+	parties, err := c.service.Get(gtx.Request.Context(), gpr.PartyID)
 	if err != nil {
 		_ = errors2.GinErrorHandler(gtx, err, http.StatusInternalServerError)
 		return
@@ -92,9 +114,13 @@ func (c controller) GetForUser(gtx *gin.Context) {
 
 func (c controller) Delete(gtx *gin.Context) {
 	var dpr entities.DeletePartyRequest
-	_ = gtx.ShouldBindJSON(&dpr)
+	err := gtx.ShouldBindJSON(&dpr)
+	if err != nil {
+		_ = errors2.GinErrorHandler(gtx, err, http.StatusBadRequest)
+		return
+	}
 
-	err := c.service.Delete(gtx.Request.Context(), dpr.ID)
+	err = c.service.Delete(gtx.Request.Context(), dpr.ID)
 	if err != nil {
 		_ = errors2.GinErrorHandler(gtx, err, http.StatusInternalServerError)
 		return

@@ -7,7 +7,7 @@ import (
 )
 
 type Service interface {
-	partyPort.Party
+	partyPort.PartyRepository
 }
 
 type partyService struct {

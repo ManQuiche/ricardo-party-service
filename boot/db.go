@@ -6,8 +6,6 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
-	"log"
-	"ricardo/party-service/internal/core/entities"
 	"ricardo/party-service/pkg/errors"
 )
 
@@ -30,11 +28,13 @@ func LoadDb() {
 		errors.CannotConnectToDb(dbHost, dbPort)
 	}
 
-	_ = client.Migrator().DropTable(entities.Party{})
-	err = client.AutoMigrate(&entities.Party{})
-	if err != nil {
-		log.Fatal("could not migrate db, exiting...")
-	}
+	//_ = client.Migrator().DropTable(entities.Party{})
+	//_ = client.Migrator().DropTable(entities.User{})
+	//_ = client.Migrator().DropTable("ricardo.party_members")
+	//err = client.AutoMigrate(&entities.Party{})
+	//if err != nil {
+	//	log.Fatal("could not migrate db, exiting...")
+	//}
 
 	if debug {
 	}

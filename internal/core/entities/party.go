@@ -16,7 +16,8 @@ type CreatePartyRequest struct {
 }
 
 type GetPartyRequest struct {
-	PartyID uint `json:"party_id,omitempty" binding:"required"`
+	PartyID uint `json:"party_id,omitempty"`
+	UserID  uint `json:"user_id,omitempty"`
 }
 
 type UpdatePartyRequest struct {
