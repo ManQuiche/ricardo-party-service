@@ -1,0 +1,16 @@
+include:
+#  - template: Security/SAST.gitlab-ci.yml
+  - project: 'ricardo134/ci-includes'
+    ref: master
+    file:
+    - 'go/1.16-test.yml'
+    - 'go/1.16-lint.yml'
+    - 'go/publish.yml'
+    - 'go/deploy.yml'
+
+
+stages:
+- test
+- lint
+- publish
+- deploy
