@@ -18,7 +18,7 @@ func initRoutes() {
 		context.Status(http.StatusOK)
 	})
 
-	partyController := party.NewController(partyService)
+	partyController := party.NewController(partyService, []byte(accessSecret))
 
 	partyGroup := router.Group("/parties")
 	partyGroup.GET("", partyController.Get)
