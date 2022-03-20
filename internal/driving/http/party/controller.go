@@ -1,12 +1,15 @@
 package party
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
+	tokens "gitlab.com/ricardo-public/jwt-tools/pkg"
 	"gorm.io/gorm"
 	"net/http"
 	"ricardo/party-service/internal/core/app/party"
 	"ricardo/party-service/internal/core/entities"
 	errors2 "ricardo/party-service/pkg/errors"
+	"strconv"
 )
 
 type Controller interface {
@@ -14,16 +17,16 @@ type Controller interface {
 	Update(gtx *gin.Context)
 	Get(gtx *gin.Context)
 	GetOne(gtx *gin.Context)
-	//Mine(gtx *gin.Context)
 	Delete(gtx *gin.Context)
 }
 
 type controller struct {
-	service party.Service
+	service      party.Service
+	accessSecret []byte
 }
 
-func NewController(service party.Service) Controller {
-	return controller{service: service}
+func NewController(service party.Service, accessSecret []byte) Controller {
+	return controller{service: service, accessSecret: accessSecret}
 }
 
 func (c controller) Create(gtx *gin.Context) {
@@ -52,6 +55,11 @@ func (c controller) Update(gtx *gin.Context) {
 	err := gtx.ShouldBindJSON(&upr)
 	if err != nil {
 		_ = errors2.GinErrorHandler(gtx, err, http.StatusBadRequest)
+		return
+	}
+
+	_, err = c.canUpdateOrDelete(gtx, upr.ID)
+	if err != nil {
 		return
 	}
 
@@ -120,6 +128,11 @@ func (c controller) Delete(gtx *gin.Context) {
 		return
 	}
 
+	_, err = c.canUpdateOrDelete(gtx, dpr.ID)
+	if err != nil {
+		return
+	}
+
 	err = c.service.Delete(gtx.Request.Context(), dpr.ID)
 	if err != nil {
 		_ = errors2.GinErrorHandler(gtx, err, http.StatusInternalServerError)
@@ -127,4 +140,30 @@ func (c controller) Delete(gtx *gin.Context) {
 	}
 
 	gtx.Status(http.StatusOK)
+}
+
+func (c controller) canUpdateOrDelete(gtx *gin.Context, partyID uint) (bool, error) {
+	p, err := c.service.Get(gtx.Request.Context(), partyID)
+	if err != nil {
+		_ = errors2.GinErrorHandler(gtx, err, http.StatusNotFound)
+		return false, err
+	}
+
+	strToken, err := tokens.ExtractTokenFromHeader(gtx.GetHeader(tokens.AuthorizationHeader))
+	if err != nil {
+		_ = errors2.GinErrorHandler(gtx, err, http.StatusInternalServerError)
+		return false, err
+	}
+
+	pToken, err := tokens.Parse(strToken, c.accessSecret)
+	claims := pToken.Claims.(tokens.RicardoClaims)
+	userID, err := strconv.ParseUint(claims.Subject, 10, 64)
+
+	if uint(userID) != p.UserID && claims.Role != tokens.AdminRole {
+		err = errors.New("unauthorized to update or delete")
+		_ = errors2.GinErrorHandler(gtx, err, http.StatusUnauthorized)
+		return false, err
+	}
+
+	return true, nil
 }
