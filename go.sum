@@ -145,8 +145,8 @@ github.com/ugorji/go v1.1.7/go.mod h1:kZn38zHttfInRq0xu/PH0az30d+z6vm202qpg1oXVM
 github.com/ugorji/go/codec v1.1.7 h1:2SvQaVZ1ouYrrKKwoSk2pzd4A9evlKJb9oTL+OaLUSs=
 github.com/ugorji/go/codec v1.1.7/go.mod h1:Ax+UKWsSmolVDwsd+7N3ZtXu+yMGCf907BLYF3GoBXY=
 github.com/zenazn/goji v0.9.0/go.mod h1:7S9M489iMyHBNxwZnk9/EHS098H4/F6TATF2mIxtB1Q=
-gitlab.com/ricardo-public/errors v1.0.2 h1:3mHls+DC573OH/f4BnNRSKFCOMM6DkvRXXebTsk1tNA=
-gitlab.com/ricardo-public/errors v1.0.2/go.mod h1:yK247M2lKZoapVm8CMQ1lm1utfG3Kv7gH4g6xoPgwSY=
+gitlab.com/ricardo-public/errors v1.0.4 h1:vsQN5x6IyA1W/0zgEP/T5BB1SaeGO9oPaYXbubUyKfo=
+gitlab.com/ricardo-public/errors v1.0.4/go.mod h1:yK247M2lKZoapVm8CMQ1lm1utfG3Kv7gH4g6xoPgwSY=
 gitlab.com/ricardo-public/jwt-tools v1.0.1 h1:2yHpTePAA2yYDFrsvWEYYqN4RyCWs9EFUquYlFfj+lg=
 gitlab.com/ricardo-public/jwt-tools v1.0.1/go.mod h1:MHPVf4pL+CfVlmcakXamdrfFkcdvZTA1gxH/uskapuo=
 go.uber.org/atomic v1.3.2/go.mod h1:gD2HeocX3+yG+ygLZcrzQJaqmWj9AIm7n08wl/qW/PE=
