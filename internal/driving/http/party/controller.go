@@ -3,12 +3,12 @@ package party
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
+	ricardoerr "gitlab.com/ricardo-public/errors/pkg/errors"
 	tokens "gitlab.com/ricardo-public/jwt-tools/pkg"
 	"gorm.io/gorm"
 	"net/http"
 	"ricardo/party-service/internal/core/app/party"
 	"ricardo/party-service/internal/core/entities"
-	errors2 "ricardo/party-service/pkg/errors"
 	"strconv"
 )
 
@@ -33,7 +33,7 @@ func (c controller) Create(gtx *gin.Context) {
 	var cpr entities.CreatePartyRequest
 	err := gtx.ShouldBindJSON(&cpr)
 	if err != nil {
-		_ = errors2.GinErrorHandler(gtx, err, http.StatusBadRequest)
+		_ = ricardoerr.GinErrorHandler(gtx, ricardoerr.New(ricardoerr.ErrBadRequest, ""))
 		return
 	}
 
@@ -43,7 +43,7 @@ func (c controller) Create(gtx *gin.Context) {
 	}
 	cParty, err := c.service.Save(gtx.Request.Context(), p)
 	if err != nil {
-		_ = errors2.GinErrorHandler(gtx, err, http.StatusInternalServerError)
+		_ = ricardoerr.GinErrorHandler(gtx, err)
 		return
 	}
 
@@ -54,7 +54,7 @@ func (c controller) Update(gtx *gin.Context) {
 	var upr entities.UpdatePartyRequest
 	err := gtx.ShouldBindJSON(&upr)
 	if err != nil {
-		_ = errors2.GinErrorHandler(gtx, err, http.StatusBadRequest)
+		_ = ricardoerr.GinErrorHandler(gtx, ricardoerr.New(ricardoerr.ErrBadRequest, ""))
 		return
 	}
 
@@ -73,7 +73,7 @@ func (c controller) Update(gtx *gin.Context) {
 
 	uParty, err := c.service.Save(gtx.Request.Context(), p)
 	if err != nil {
-		_ = errors2.GinErrorHandler(gtx, err, http.StatusInternalServerError)
+		_ = ricardoerr.GinErrorHandler(gtx, err)
 		return
 	}
 
@@ -84,7 +84,7 @@ func (c controller) Get(gtx *gin.Context) {
 	var gpr entities.GetPartyRequest
 	err := gtx.ShouldBindJSON(&gpr)
 	if err != nil {
-		_ = errors2.GinErrorHandler(gtx, err, http.StatusBadRequest)
+		_ = ricardoerr.GinErrorHandler(gtx, ricardoerr.New(ricardoerr.ErrBadRequest, ""))
 		return
 	}
 
@@ -96,7 +96,7 @@ func (c controller) Get(gtx *gin.Context) {
 	}
 
 	if err != nil {
-		_ = errors2.GinErrorHandler(gtx, err, http.StatusInternalServerError)
+		_ = ricardoerr.GinErrorHandler(gtx, err)
 		return
 	}
 
@@ -107,13 +107,13 @@ func (c controller) GetOne(gtx *gin.Context) {
 	var gpr entities.GetPartyRequest
 	err := gtx.ShouldBindJSON(&gpr)
 	if err != nil {
-		_ = errors2.GinErrorHandler(gtx, err, http.StatusBadRequest)
+		_ = ricardoerr.GinErrorHandler(gtx, ricardoerr.New(ricardoerr.ErrBadRequest, ""))
 		return
 	}
 
 	parties, err := c.service.Get(gtx.Request.Context(), gpr.PartyID)
 	if err != nil {
-		_ = errors2.GinErrorHandler(gtx, err, http.StatusInternalServerError)
+		_ = ricardoerr.GinErrorHandler(gtx, err)
 		return
 	}
 
@@ -124,7 +124,7 @@ func (c controller) Delete(gtx *gin.Context) {
 	var dpr entities.DeletePartyRequest
 	err := gtx.ShouldBindJSON(&dpr)
 	if err != nil {
-		_ = errors2.GinErrorHandler(gtx, err, http.StatusBadRequest)
+		_ = ricardoerr.GinErrorHandler(gtx, ricardoerr.New(ricardoerr.ErrBadRequest, ""))
 		return
 	}
 
@@ -135,7 +135,7 @@ func (c controller) Delete(gtx *gin.Context) {
 
 	err = c.service.Delete(gtx.Request.Context(), dpr.ID)
 	if err != nil {
-		_ = errors2.GinErrorHandler(gtx, err, http.StatusInternalServerError)
+		_ = ricardoerr.GinErrorHandler(gtx, err)
 		return
 	}
 
@@ -145,13 +145,13 @@ func (c controller) Delete(gtx *gin.Context) {
 func (c controller) canUpdateOrDelete(gtx *gin.Context, partyID uint) (bool, error) {
 	p, err := c.service.Get(gtx.Request.Context(), partyID)
 	if err != nil {
-		_ = errors2.GinErrorHandler(gtx, err, http.StatusNotFound)
+		_ = ricardoerr.GinErrorHandler(gtx, ricardoerr.New(ricardoerr.ErrBadRequest, ""))
 		return false, err
 	}
 
 	strToken, err := tokens.ExtractTokenFromHeader(gtx.GetHeader(tokens.AuthorizationHeader))
 	if err != nil {
-		_ = errors2.GinErrorHandler(gtx, err, http.StatusInternalServerError)
+		_ = ricardoerr.GinErrorHandler(gtx, err)
 		return false, err
 	}
 
@@ -161,7 +161,7 @@ func (c controller) canUpdateOrDelete(gtx *gin.Context, partyID uint) (bool, err
 
 	if uint(userID) != p.UserID && claims.Role != tokens.AdminRole {
 		err = errors.New("unauthorized to update or delete")
-		_ = errors2.GinErrorHandler(gtx, err, http.StatusUnauthorized)
+		_ = ricardoerr.GinErrorHandler(gtx, err)
 		return false, err
 	}
 
