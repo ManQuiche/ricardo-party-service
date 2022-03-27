@@ -22,7 +22,7 @@ func notFoundOrElseError(err error) error {
 		return ricardoerr.New(ricardoerr.ErrNotFound, "record not found")
 	}
 
-	return ricardoerr.New(ricardoerr.ErrDatabaseError, "uncategorized database error")
+	return ricardoerr.New(ricardoerr.ErrDatabaseError, err.Error())
 }
 
 func (p partyRepository) Get(ctx context.Context, partyID uint) (*entities.Party, error) {
