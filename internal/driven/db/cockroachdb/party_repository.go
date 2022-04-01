@@ -37,7 +37,7 @@ func (p partyRepository) GetAll(ctx context.Context) ([]entities.Party, error) {
 
 func (p partyRepository) GetAllForUser(ctx context.Context, userID uint) ([]entities.Party, error) {
 	var parties []entities.Party
-	err := p.client.Where(&entities.Party{UserID: userID}).Find(&parties).Error
+	err := p.client.Where("user_id = ?", userID).Find(&parties).Error
 	if err != nil {
 		return nil, err
 	}
