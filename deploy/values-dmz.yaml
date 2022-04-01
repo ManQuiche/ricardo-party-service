@@ -15,7 +15,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 configs:
-  DB_HOST: "postgres-service.ricardo-dmz.svc.cluster.local"
+  DB_HOST: "postgres-service.ricardo-prod.svc.cluster.local"
   DB_PORT: "5432"
   PORT: "80"
   URL: "0.0.0.0"
