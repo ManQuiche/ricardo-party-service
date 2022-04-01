@@ -94,7 +94,7 @@ func (c controller) Get(gtx *gin.Context) {
 func (c controller) GetForUser(gtx *gin.Context) {
 	userId, err := strconv.ParseUint(gtx.Param("user_id"), 10, 64)
 	if err != nil {
-		_ = errors2.GinErrorHandler(gtx, err, http.StatusBadRequest)
+		_ = ricardoerr.GinErrorHandler(gtx, ricardoerr.New(ricardoerr.ErrBadRequest, err.Error()))
 	}
 
 	parties, err := c.service.GetAllForUser(gtx.Request.Context(), uint(userId))
