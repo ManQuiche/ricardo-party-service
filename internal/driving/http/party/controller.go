@@ -7,14 +7,15 @@ import (
 	"ricardo/party-service/internal/core/app/party"
 	"ricardo/party-service/internal/core/entities"
 	errors2 "ricardo/party-service/pkg/errors"
+	"strconv"
 )
 
 type Controller interface {
 	Create(gtx *gin.Context)
 	Update(gtx *gin.Context)
 	Get(gtx *gin.Context)
+	GetForUser(gtx *gin.Context)
 	GetOne(gtx *gin.Context)
-	//Mine(gtx *gin.Context)
 	Delete(gtx *gin.Context)
 }
 
@@ -73,20 +74,22 @@ func (c controller) Update(gtx *gin.Context) {
 }
 
 func (c controller) Get(gtx *gin.Context) {
-	var gpr entities.GetPartyRequest
-	err := gtx.ShouldBindJSON(&gpr)
+	parties, err := c.service.GetAll(gtx.Request.Context())
 	if err != nil {
-		_ = errors2.GinErrorHandler(gtx, err, http.StatusBadRequest)
+		_ = errors2.GinErrorHandler(gtx, err, http.StatusInternalServerError)
 		return
 	}
 
-	var parties []entities.Party
-	if gpr.UserID != 0 {
-		parties, err = c.service.GetAllForUser(gtx.Request.Context(), gpr.UserID)
-	} else {
-		parties, err = c.service.GetAll(gtx.Request.Context())
+	gtx.JSON(http.StatusOK, parties)
+}
+
+func (c controller) GetForUser(gtx *gin.Context) {
+	userId, err := strconv.ParseUint(gtx.Param("user_id"), 10, 64)
+	if err != nil {
+		_ = errors2.GinErrorHandler(gtx, err, http.StatusBadRequest)
 	}
 
+	parties, err := c.service.GetAllForUser(gtx.Request.Context(), uint(userId))
 	if err != nil {
 		_ = errors2.GinErrorHandler(gtx, err, http.StatusInternalServerError)
 		return
@@ -96,14 +99,12 @@ func (c controller) Get(gtx *gin.Context) {
 }
 
 func (c controller) GetOne(gtx *gin.Context) {
-	var gpr entities.GetPartyRequest
-	err := gtx.ShouldBindJSON(&gpr)
+	partyId, err := strconv.ParseUint(gtx.Param("party_id"), 10, 64)
 	if err != nil {
 		_ = errors2.GinErrorHandler(gtx, err, http.StatusBadRequest)
-		return
 	}
 
-	parties, err := c.service.Get(gtx.Request.Context(), gpr.PartyID)
+	parties, err := c.service.Get(gtx.Request.Context(), uint(partyId))
 	if err != nil {
 		_ = errors2.GinErrorHandler(gtx, err, http.StatusInternalServerError)
 		return
