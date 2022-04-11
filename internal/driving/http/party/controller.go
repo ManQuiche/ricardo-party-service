@@ -30,6 +30,13 @@ func NewController(service app.PartyService, accessSecret []byte) Controller {
 	return controller{service: service, accessSecret: accessSecret}
 }
 
+// Create
+// @Summary Create a party
+// @Description Create a party from json
+// @Param party body entities.CreatePartyRequest true "Add party"
+// @Success 200 {object} entities.Party
+// @Failure 400 {object} ricardoErr.RicardoError
+// @Router /parties [post]
 func (c controller) Create(gtx *gin.Context) {
 	var cpr entities.CreatePartyRequest
 	err := gtx.ShouldBindJSON(&cpr)
@@ -37,7 +44,6 @@ func (c controller) Create(gtx *gin.Context) {
 		_ = ricardoErr.GinErrorHandler(gtx, ricardoErr.New(ricardoErr.ErrBadRequest, err.Error()))
 		return
 	}
-
 	p := entities.Party{
 		Name:   cpr.Name,
 		UserID: cpr.UserID,
@@ -52,6 +58,13 @@ func (c controller) Create(gtx *gin.Context) {
 	gtx.JSON(http.StatusOK, cParty)
 }
 
+// Update
+// @Summary Update a party
+// @Description Update a party from json
+// @Param party body entities.UpdatePartyRequest true "Update party"
+// @Success 200 {object} entities.Party
+// @Failure 400 {object} ricardoErr.RicardoError
+// @Router /parties [PATCH]
 func (c controller) Update(gtx *gin.Context) {
 	var upr entities.UpdatePartyRequest
 	err := gtx.ShouldBindJSON(&upr)
@@ -82,6 +95,12 @@ func (c controller) Update(gtx *gin.Context) {
 	gtx.JSON(http.StatusOK, uParty)
 }
 
+// Get
+// @Summary Get all party
+// @Description Get all party
+// @Success 200 {array} []entities.Party
+// @Failure 400 {object} ricardoErr.RicardoError
+// @Router /parties [GET]
 func (c controller) Get(gtx *gin.Context) {
 	parties, err := c.service.GetAll(gtx.Request.Context())
 	if err != nil {
@@ -92,6 +111,13 @@ func (c controller) Get(gtx *gin.Context) {
 	gtx.JSON(http.StatusOK, parties)
 }
 
+// GetForUser
+// @Summary Get all parties of a user
+// @Description Get all parties of a user
+// @Param user_id path int true "User id"
+// @Success 200 {array} []entities.Party
+// @Failure 400 {object} ricardoErr.RicardoError
+// @Router /parties/user/{user_id} [GET]
 func (c controller) GetForUser(gtx *gin.Context) {
 	userId, err := strconv.ParseUint(gtx.Param("user_id"), 10, 64)
 	if err != nil {
@@ -107,6 +133,13 @@ func (c controller) GetForUser(gtx *gin.Context) {
 	gtx.JSON(http.StatusOK, parties)
 }
 
+// GetOne
+// @Summary Get all parties of a user
+// @Description Get all parties of a user
+// @Param party_id path int true "Party id"
+// @Success 200 {object} entities.Party
+// @Failure 400 {object} ricardoErr.RicardoError
+// @Router /parties/user/{user_id} [GET]
 func (c controller) GetOne(gtx *gin.Context) {
 	partyId, err := strconv.ParseUint(gtx.Param("party_id"), 10, 64)
 	if err != nil {
@@ -123,6 +156,13 @@ func (c controller) GetOne(gtx *gin.Context) {
 	gtx.JSON(http.StatusOK, parties)
 }
 
+// Delete
+// @Summary Delete a party
+// @Description Delete a party by id
+// @Param party_id path int true "Party id"
+// @Success 200
+// @Failure 400 {object} ricardoErr.RicardoError
+// @Router /parties [DELETE]
 func (c controller) Delete(gtx *gin.Context) {
 	var dpr entities.DeletePartyRequest
 	err := gtx.ShouldBindJSON(&dpr)

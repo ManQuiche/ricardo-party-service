@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	tokens "gitlab.com/ricardo-public/jwt-tools/pkg"
+	"gitlab.com/ricardo134/party-service/docs"
 	"gitlab.com/ricardo134/party-service/internal/driving/http/party"
 	"log"
 	"net/http"
@@ -12,6 +13,21 @@ import (
 var (
 	router *gin.Engine
 )
+
+// @title party-service
+// @version 1.0
+// @description Ricardo's party service.
+//
+// @accept json
+// @produce json
+//
+// @contact.name   Ricardo teams
+// @contact.email  support@ricardo.net
+//
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+//
+// @BasePath  /parties
 
 func initRoutes() {
 	// Ready route
