@@ -56,7 +56,4 @@ func ServeHTTP() {
 	log.Printf("Launching server on %s...\n", appURL)
 
 	log.Fatalln(router.Run(appURL))
-
-	// TODO: go func and etc
-	//log.Println("HTTP server stopped, exiting...")
 }
