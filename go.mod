@@ -6,7 +6,7 @@ require (
 	github.com/gin-gonic/gin v1.7.7
 	github.com/lib/pq v1.10.4
 	gitlab.com/ricardo-public/errors v1.0.4
-	gitlab.com/ricardo-public/jwt-tools v1.0.1
+	gitlab.com/ricardo-public/jwt-tools v1.1.3
 	gorm.io/driver/postgres v1.3.1
 	gorm.io/gorm v1.23.1
 )
