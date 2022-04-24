@@ -60,7 +60,7 @@ ingress:
   hosts:
     - host: dmz.ricardo.net
       paths:
-        - path: /party
+        - path: /parties
           pathType: ImplementationSpecific
   tls: []
   #  - secretName: chart-example-tls
