@@ -8,12 +8,13 @@ import (
 )
 
 var (
-	dbHost     string
-	dbPort     string
-	dbUser     string
-	dbPassword string
-	port       string
-	url        string
+	dbHost       string
+	dbPort       string
+	dbUser       string
+	dbPassword   string
+	port         string
+	url          string
+	accessSecret string
 
 	debug bool
 )
@@ -27,6 +28,7 @@ func LoadEnv() {
 	dbPassword = env("DB_PASSWORD")
 	port = env("PORT")
 	url = env("URL")
+	accessSecret = env("ACCESS_SECRET")
 	debug = envBool("DEBUG")
 
 	if err != nil {

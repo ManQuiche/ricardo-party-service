@@ -3,6 +3,7 @@ package boot
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	tokens "gitlab.com/ricardo-public/jwt-tools/pkg"
 	"log"
 	"net/http"
 	"ricardo/party-service/internal/driving/http/party"
@@ -18,15 +19,16 @@ func initRoutes() {
 		context.Status(http.StatusOK)
 	})
 
-	partyController := party.NewController(partyService)
+	partyController := party.NewController(partyService, []byte(accessSecret))
+	tokenMiddleware := tokens.NewJwtAuthMiddleware([]byte(accessSecret))
 
-	partyGroup := router.Group("/party")
-	partyGroup.GET("", partyController.Get)
-	partyGroup.GET("/:party_id", partyController.GetOne)
-	//partyGroup.GET("/mine", partyController.GetMine)
-	partyGroup.POST("", partyController.Create)
-	partyGroup.PATCH("", partyController.Update)
-	partyGroup.DELETE("", partyController.Delete)
+	partyGroup := router.Group("/parties")
+	partyGroup.GET("", tokenMiddleware.Authorize, partyController.Get)
+	partyGroup.GET("/user/:user_id", tokenMiddleware.Authorize, partyController.GetForUser)
+	partyGroup.GET("/:party_id", tokenMiddleware.Authorize, partyController.GetOne)
+	partyGroup.POST("", tokenMiddleware.Authorize, partyController.Create)
+	partyGroup.PATCH("", tokenMiddleware.Authorize, partyController.Update)
+	partyGroup.DELETE("", tokenMiddleware.Authorize, partyController.Delete)
 }
 
 func ServeHTTP() {
