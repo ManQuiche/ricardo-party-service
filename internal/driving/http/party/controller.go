@@ -34,13 +34,14 @@ func (c controller) Create(gtx *gin.Context) {
 	var cpr entities.CreatePartyRequest
 	err := gtx.ShouldBindJSON(&cpr)
 	if err != nil {
-		_ = ricardoErr.GinErrorHandler(gtx, ricardoErr.New(ricardoErr.ErrBadRequest, ""))
+		_ = ricardoErr.GinErrorHandler(gtx, ricardoErr.New(ricardoErr.ErrBadRequest, err.Error()))
 		return
 	}
 
 	p := entities.Party{
 		Name:   cpr.Name,
 		UserID: cpr.UserID,
+		Time:   cpr.Time,
 	}
 	cParty, err := c.service.Save(gtx.Request.Context(), p)
 	if err != nil {

@@ -21,7 +21,7 @@ func LoadDb() {
 	client, err = gorm.Open(postgres.Open(
 		fmt.Sprint("postgres://", dbUser, ":", dbPassword, "@", dbHost, ":", dbPort, "?sslmode=disable")), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
-			TablePrefix: "ricardo.",
+			TablePrefix: fmt.Sprint(dbSchema, "."),
 		},
 	})
 	if err != nil {
