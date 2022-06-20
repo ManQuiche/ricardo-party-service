@@ -73,3 +73,12 @@ func (p partyRepository) Delete(ctx context.Context, partyID uint) error {
 
 	return nil
 }
+
+func (p partyRepository) DeleteAllForUser(ctx context.Context, userID uint) error {
+	err := p.client.Where("user_id = ?", userID).Delete(&entities.Party{}).Error
+	if err != nil {
+		return notFoundOrElseError(err)
+	}
+
+	return nil
+}
