@@ -39,3 +39,7 @@ func (p partyService) Save(ctx context.Context, party entities.Party) (*entities
 func (p partyService) Delete(ctx context.Context, partyID uint) error {
 	return p.repo.Delete(ctx, partyID)
 }
+
+func (p partyService) DeleteAllForUser(ctx context.Context, partyID uint) error {
+	return p.repo.Delete(ctx, partyID)
+}

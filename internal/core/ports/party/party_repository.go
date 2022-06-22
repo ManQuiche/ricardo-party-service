@@ -11,4 +11,5 @@ type PartyRepository interface {
 	GetAllForUser(ctx context.Context, userID uint) ([]entities.Party, error)
 	Save(ctx context.Context, party entities.Party) (*entities.Party, error)
 	Delete(ctx context.Context, partyID uint) error
+	DeleteAllForUser(ctx context.Context, userID uint) error
 }
