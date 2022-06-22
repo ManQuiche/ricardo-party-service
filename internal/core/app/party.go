@@ -1,20 +1,20 @@
-package party
+package app
 
 import (
 	"context"
 	"ricardo/party-service/internal/core/entities"
-	partyPort "ricardo/party-service/internal/core/ports/party"
+	partyPort "ricardo/party-service/internal/core/ports"
 )
 
-type Service interface {
-	partyPort.PartyRepository
+type PartyService interface {
+	partyPort.PartyService
 }
 
 type partyService struct {
 	repo partyPort.PartyRepository
 }
 
-func NewPartyService(repo partyPort.PartyRepository) Service {
+func NewPartyService(repo partyPort.PartyRepository) PartyService {
 	return partyService{
 		repo: repo,
 	}

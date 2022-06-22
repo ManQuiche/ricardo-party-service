@@ -12,6 +12,7 @@ var (
 	dbPort       string
 	dbUser       string
 	dbPassword   string
+	dbDatabase   string
 	dbSchema     string
 	port         string
 	url          string
@@ -29,6 +30,7 @@ func LoadEnv() {
 	dbHost = env("DB_HOST")
 	dbPort = env("DB_PORT")
 	dbUser = env("DB_USER")
+	dbDatabase = env("DB_DATABASE")
 	dbSchema = env("DB_SCHEMA")
 	dbPassword = env("DB_PASSWORD")
 

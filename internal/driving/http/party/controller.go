@@ -7,7 +7,7 @@ import (
 	tokens "gitlab.com/ricardo-public/jwt-tools/pkg"
 	"gorm.io/gorm"
 	"net/http"
-	"ricardo/party-service/internal/core/app/party"
+	"ricardo/party-service/internal/core/app"
 	"ricardo/party-service/internal/core/entities"
 	"strconv"
 )
@@ -22,11 +22,11 @@ type Controller interface {
 }
 
 type controller struct {
-	service      party.Service
+	service      app.PartyService
 	accessSecret []byte
 }
 
-func NewController(service party.Service, accessSecret []byte) Controller {
+func NewController(service app.PartyService, accessSecret []byte) Controller {
 	return controller{service: service, accessSecret: accessSecret}
 }
 

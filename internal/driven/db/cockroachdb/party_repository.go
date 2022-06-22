@@ -2,27 +2,17 @@ package cockroachdb
 
 import (
 	"context"
-	"errors"
-	ricardoerr "gitlab.com/ricardo-public/errors/pkg/errors"
 	"gorm.io/gorm"
 	"ricardo/party-service/internal/core/entities"
-	"ricardo/party-service/internal/core/ports/party"
+	"ricardo/party-service/internal/core/ports"
 )
 
 type partyRepository struct {
 	client *gorm.DB
 }
 
-func NewPartyRepository(client *gorm.DB) partyPort.PartyRepository {
+func NewPartyRepository(client *gorm.DB) ports.PartyRepository {
 	return partyRepository{client: client}
-}
-
-func notFoundOrElseError(err error) error {
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return ricardoerr.New(ricardoerr.ErrNotFound, "record not found")
-	}
-
-	return ricardoerr.New(ricardoerr.ErrDatabaseError, err.Error())
 }
 
 func (p partyRepository) Get(ctx context.Context, partyID uint) (*entities.Party, error) {

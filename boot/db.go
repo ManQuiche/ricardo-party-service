@@ -6,6 +6,8 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
+	"log"
+	"ricardo/party-service/internal/core/entities"
 	"ricardo/party-service/pkg/errors"
 )
 
@@ -19,7 +21,7 @@ func LoadDb() {
 
 	var err error
 	client, err = gorm.Open(postgres.Open(
-		fmt.Sprint("postgres://", dbUser, ":", dbPassword, "@", dbHost, ":", dbPort, "?sslmode=disable")), &gorm.Config{
+		fmt.Sprint("postgres://", dbUser, ":", dbPassword, "@", dbHost, ":", dbPort, "/", dbDatabase, "?sslmode=disable")), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			TablePrefix: fmt.Sprint(dbSchema, "."),
 		},
@@ -28,14 +30,8 @@ func LoadDb() {
 		errors.CannotConnectToDb(dbHost, dbPort)
 	}
 
-	//_ = client.Migrator().DropTable(entities.Party{})
-	//_ = client.Migrator().DropTable(entities.User{})
-	//_ = client.Migrator().DropTable("ricardo.party_members")
-	//err = client.AutoMigrate(&entities.Party{})
-	//if err != nil {
-	//	log.Fatal("could not migrate db, exiting...")
-	//}
-
-	if debug {
+	err = client.AutoMigrate(&entities.Party{}, &entities.User{})
+	if err != nil {
+		log.Fatal("could not migrate db, exiting...")
 	}
 }

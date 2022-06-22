@@ -4,15 +4,16 @@ import (
 	"fmt"
 	"github.com/nats-io/nats.go"
 	"log"
+	"ricardo/party-service/internal/core/app"
 
-	"ricardo/party-service/internal/core/app/party"
 	"ricardo/party-service/internal/driven/db/cockroachdb"
 	"ricardo/party-service/internal/driving/async"
 	ricardoNats "ricardo/party-service/internal/driving/async/nats"
 )
 
 var (
-	partyService party.Service
+	partyService app.PartyService
+	userService  app.UserService
 
 	natsEncConn  *nats.EncodedConn
 	asyncHandler async.Handler
@@ -26,7 +27,10 @@ func LoadServices() {
 	natsEncConn, err = nats.NewEncodedConn(natsConn, nats.JSON_ENCODER)
 
 	partyRepo := cockroachdb.NewPartyRepository(client)
-	partyService = party.NewPartyService(partyRepo)
+	partyService = app.NewPartyService(partyRepo)
 
-	asyncHandler = ricardoNats.NewNatsUserHandler(partyService)
+	userRepo := cockroachdb.NewUserRepository(client)
+	userService = app.NewUserService(userRepo)
+
+	asyncHandler = ricardoNats.NewNatsUserHandler(partyService, userService)
 }
