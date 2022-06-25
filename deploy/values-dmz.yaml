@@ -29,6 +29,7 @@ configs:
   NATS_USR: ricardo
   NATS_PWD: ricardo
   NATS_REGISTER_TOPIC: "ricardo.AccountCreated"
+  NATS_USER_DELETED: "ricardo.UserDeleted"
 
 serviceAccount:
   # Specifies whether a service account should be created
