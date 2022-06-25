@@ -25,6 +25,7 @@ configs:
   DB_USER: "ricardo"
   DEBUG: "true"
   ACCESS_SECRET: "wnECkZYYNHHLYxGrS9TR1uuNZNQiVSgf5qSYlmnZXIO4cPMzz4CQ0U7dwGa5gjWn2KgMKmh4MGoqkRaVFFXlSPuTKR1vfJNBw5D/L9zDKmOcdgjdKPMGmr0u7h6p2R4OdXWn6FERfRsOmNSjneKSa4jG0dr+c0UTWfe2n/mMV4WR213umdKV9WcMQTX6Cx67LX5Z6yGDgFM6B2tr704yvzuwmWZvfQC+hacomTVSvDciI+zUsEDbuuzFfeacv+p2wKqhpmUEyoDqfRKFXqTm2/AKxVnUHyiGAEyI2lSdnz20mVVX/HO08qsb4q4vhMrPtDtfOPC1dVobhfWOI4CXWw=="
+  NATS_URL: "nats:4222"
   NATS_USR: ricardo
   NATS_PWD: ricardo
   NATS_REGISTER_TOPIC: "ricardo.AccountCreated"
