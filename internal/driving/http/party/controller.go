@@ -142,12 +142,12 @@ func (c controller) GetForUser(gtx *gin.Context) {
 }
 
 // GetOne
-// @Summary Get all parties of a user
-// @Description Get all parties of a user
+// @Summary Get a specific party by ID
+// @Description Get a specific party by ID
 // @Param party_id path int true "Party id"
 // @Success 200 {object} entities.Party
 // @Failure 400 {object} ricardoErr.RicardoError
-// @Router /parties/user/{user_id} [GET]
+// @Router /parties/{party_id} [GET]
 func (c controller) GetOne(gtx *gin.Context) {
 	partyId, err := strconv.ParseUint(gtx.Param("party_id"), 10, 64)
 	if err != nil {
