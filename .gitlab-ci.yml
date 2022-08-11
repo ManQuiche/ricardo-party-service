@@ -4,13 +4,11 @@ include:
     ref: master
     file:
     - 'go/latest-test.yml'
-    - 'go/latest-lint.yml'
     - 'go/publish.yml'
     - 'go/deploy.yml'
 
 
 stages:
 - test
-- lint
 - publish
 - deploy
