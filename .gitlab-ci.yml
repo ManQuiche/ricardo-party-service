@@ -3,8 +3,8 @@ include:
   - project: 'ricardo134/ci-includes'
     ref: master
     file:
-    - 'go/1.16-test.yml'
-    - 'go/1.16-lint.yml'
+    - 'go/latest-test.yml'
+    - 'go/latest-lint.yml'
     - 'go/publish.yml'
     - 'go/deploy.yml'
 
