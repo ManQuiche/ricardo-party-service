@@ -12,7 +12,7 @@ type Party struct {
 	UserID  uint      `json:"user_id,omitempty"`
 	User    User      `json:"-"`
 	Time    time.Time `json:"time,omitempty"`
-	Members []*User   `json:"members,omitempty" gorm:"many2many:party_members;"`
+	Members []User    `json:"members,omitempty" gorm:"many2many:party_members;"`
 }
 
 func (p *Party) MarshalJSON() ([]byte, error) {
