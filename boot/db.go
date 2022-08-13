@@ -5,6 +5,7 @@ import (
 	_ "github.com/lib/pq"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 	"log"
 	"ricardo/party-service/internal/core/entities"
@@ -25,12 +26,14 @@ func LoadDb() {
 		NamingStrategy: schema.NamingStrategy{
 			TablePrefix: fmt.Sprint(dbSchema, "."),
 		},
+	}, &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {
 		errors.CannotConnectToDb(dbHost, dbPort)
 	}
 
-	err = client.AutoMigrate(&entities.Party{})
+	err = client.AutoMigrate(&entities.Party{}, &entities.User{})
 	if err != nil {
 		log.Fatal("could not migrate db, exiting...")
 	}
