@@ -5,10 +5,8 @@ include:
     file:
     - 'go/latest-test.yml'
     - 'go/publish.yml'
-    - 'go/deploy.yml'
 
 
 stages:
 - test
 - publish
-- deploy
