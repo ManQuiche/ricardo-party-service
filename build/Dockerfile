@@ -7,13 +7,13 @@ RUN go mod download
 
 COPY . .
 
-RUN GO111MODULE="" CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /app/party-service cmd/main.go
+RUN GO111MODULE="" CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /app/invite-service cmd/main.go
 
 ENV URL="0.0.0.0"
 ENV PORT="80"
 
 EXPOSE 80
 
-RUN chmod +x /app/party-service
+RUN chmod +x /app/invite-service
 
 CMD ["/app/party-service"]

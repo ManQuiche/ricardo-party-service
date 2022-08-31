@@ -3,12 +3,12 @@ package boot
 import (
 	"fmt"
 	"github.com/nats-io/nats.go"
+	"gitlab.com/ricardo134/party-service/internal/core/app"
 	"log"
-	"ricardo/party-service/internal/core/app"
 
-	"ricardo/party-service/internal/driven/db/cockroachdb"
-	"ricardo/party-service/internal/driving/async"
-	ricardoNats "ricardo/party-service/internal/driving/async/nats"
+	"gitlab.com/ricardo134/party-service/internal/driven/db/cockroachdb"
+	"gitlab.com/ricardo134/party-service/internal/driving/async"
+	ricardoNats "gitlab.com/ricardo134/party-service/internal/driving/async/nats"
 )
 
 var (

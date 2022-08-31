@@ -1,9 +1,9 @@
 package boot
 
 import (
+	"gitlab.com/ricardo134/party-service/pkg/errors"
 	"log"
 	"os"
-	"ricardo/party-service/pkg/errors"
 	"strconv"
 )
 

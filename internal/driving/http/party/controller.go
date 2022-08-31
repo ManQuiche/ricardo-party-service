@@ -5,10 +5,10 @@ import (
 	"github.com/gin-gonic/gin"
 	ricardoErr "gitlab.com/ricardo-public/errors/pkg/errors"
 	tokens "gitlab.com/ricardo-public/jwt-tools/pkg"
+	"gitlab.com/ricardo134/party-service/internal/core/app"
+	"gitlab.com/ricardo134/party-service/internal/core/entities"
 	"gorm.io/gorm"
 	"net/http"
-	"ricardo/party-service/internal/core/app"
-	"ricardo/party-service/internal/core/entities"
 	"strconv"
 )
 

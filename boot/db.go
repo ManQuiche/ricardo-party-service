@@ -3,13 +3,13 @@ package boot
 import (
 	"fmt"
 	_ "github.com/lib/pq"
+	"gitlab.com/ricardo134/party-service/internal/core/entities"
+	"gitlab.com/ricardo134/party-service/pkg/errors"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 	"log"
-	"ricardo/party-service/internal/core/entities"
-	"ricardo/party-service/pkg/errors"
 )
 
 var (

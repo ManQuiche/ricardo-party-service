@@ -2,8 +2,8 @@ package app
 
 import (
 	"context"
-	"ricardo/party-service/internal/core/entities"
-	partyPort "ricardo/party-service/internal/core/ports"
+	"gitlab.com/ricardo134/party-service/internal/core/entities"
+	partyPort "gitlab.com/ricardo134/party-service/internal/core/ports"
 )
 
 type PartyService interface {

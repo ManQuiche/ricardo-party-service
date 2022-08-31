@@ -2,10 +2,10 @@ package nats
 
 import (
 	"context"
+	"gitlab.com/ricardo134/party-service/internal/core/app"
+	"gitlab.com/ricardo134/party-service/internal/core/entities"
+	"gitlab.com/ricardo134/party-service/internal/driving/async"
 	"gorm.io/gorm"
-	"ricardo/party-service/internal/core/app"
-	"ricardo/party-service/internal/core/entities"
-	"ricardo/party-service/internal/driving/async"
 )
 
 type natsHandler struct {

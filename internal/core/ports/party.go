@@ -2,7 +2,7 @@ package ports
 
 import (
 	"context"
-	"ricardo/party-service/internal/core/entities"
+	"gitlab.com/ricardo134/party-service/internal/core/entities"
 )
 
 type PartyService interface {

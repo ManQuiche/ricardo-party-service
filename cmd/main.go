@@ -1,6 +1,6 @@
 package main
 
-import "ricardo/party-service/boot"
+import "gitlab.com/ricardo134/party-service/boot"
 
 func main() {
 	boot.LoadEnv()

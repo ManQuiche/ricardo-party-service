@@ -2,8 +2,8 @@ package app
 
 import (
 	"context"
-	"ricardo/party-service/internal/core/entities"
-	"ricardo/party-service/internal/core/ports"
+	"gitlab.com/ricardo134/party-service/internal/core/entities"
+	"gitlab.com/ricardo134/party-service/internal/core/ports"
 )
 
 type UserService interface {

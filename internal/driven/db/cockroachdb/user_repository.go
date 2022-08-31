@@ -2,9 +2,9 @@ package cockroachdb
 
 import (
 	"context"
+	"gitlab.com/ricardo134/party-service/internal/core/entities"
+	"gitlab.com/ricardo134/party-service/internal/core/ports"
 	"gorm.io/gorm"
-	"ricardo/party-service/internal/core/entities"
-	"ricardo/party-service/internal/core/ports"
 )
 
 type userRepository struct {
