@@ -14,6 +14,6 @@ ENV PORT="80"
 
 EXPOSE 80
 
-RUN chmod +x /app/invite-service
+RUN chmod +x /app/party-service
 
 CMD ["/app/party-service"]
