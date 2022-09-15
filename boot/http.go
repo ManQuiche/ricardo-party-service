@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	tokens "gitlab.com/ricardo-public/jwt-tools/pkg"
-	"gitlab.com/ricardo134/party-service/docs"
 	"gitlab.com/ricardo134/party-service/internal/driving/http/party"
 	"log"
 	"net/http"
