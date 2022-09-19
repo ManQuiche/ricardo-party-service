@@ -8,7 +8,6 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"gorm.io/gorm/schema"
 	"log"
 )
 
@@ -23,10 +22,6 @@ func LoadDb() {
 	var err error
 	client, err = gorm.Open(postgres.Open(
 		fmt.Sprint("postgres://", dbUser, ":", dbPassword, "@", dbHost, ":", dbPort, "/", dbDatabase, "?sslmode=disable")), &gorm.Config{
-		NamingStrategy: schema.NamingStrategy{
-			TablePrefix: fmt.Sprint(dbSchema, "."),
-		},
-	}, &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {

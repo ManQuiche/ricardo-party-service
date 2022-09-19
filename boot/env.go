@@ -13,15 +13,15 @@ var (
 	dbUser       string
 	dbPassword   string
 	dbDatabase   string
-	dbSchema     string
 	port         string
 	url          string
 	accessSecret string
 
-	natsURL         string
-	natsUsr         string
-	natsPwd         string
-	natsUserDeleted string
+	natsURL           string
+	natsUsr           string
+	natsPwd           string
+	natsRegisterTopic string
+	natsUserDeleted   string
 
 	debug bool
 )
@@ -31,7 +31,6 @@ func LoadEnv() {
 	dbPort = env("DB_PORT")
 	dbUser = env("DB_USER")
 	dbDatabase = env("DB_DATABASE")
-	dbSchema = env("DB_SCHEMA")
 	dbPassword = env("DB_PASSWORD")
 
 	port = env("PORT")
@@ -42,6 +41,7 @@ func LoadEnv() {
 	natsURL = env("NATS_URL")
 	natsUsr = env("NATS_USR")
 	natsPwd = env("NATS_PWD")
+	natsRegisterTopic = env("NATS_REGISTER_TOPIC")
 	natsUserDeleted = env("NATS_USER_DELETED")
 }
 
