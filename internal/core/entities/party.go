@@ -68,7 +68,3 @@ type UpdatePartyRequest struct {
 	Name   string `json:"name,omitempty" binding:"required"`
 	UserID uint   `json:"user_id,omitempty" binding:"required"`
 }
-
-type DeletePartyRequest struct {
-	ID uint `json:"id,omitempty" binding:"required"`
-}

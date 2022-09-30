@@ -4,10 +4,11 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	ricardoErr "gitlab.com/ricardo-public/errors/pkg/errors"
-	tokens "gitlab.com/ricardo-public/jwt-tools/pkg"
+	tokens "gitlab.com/ricardo-public/jwt-tools/v2/pkg/token"
 	"gitlab.com/ricardo134/party-service/internal/core/app"
 	"gitlab.com/ricardo134/party-service/internal/core/entities"
 	"gorm.io/gorm"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -70,11 +71,11 @@ func (c controller) Update(gtx *gin.Context) {
 	var upr entities.UpdatePartyRequest
 	err := gtx.ShouldBindJSON(&upr)
 	if err != nil {
-		_ = ricardoErr.GinErrorHandler(gtx, ricardoErr.New(ricardoErr.ErrBadRequest, ""))
+		_ = ricardoErr.GinErrorHandler(gtx, ricardoErr.New(ricardoErr.ErrBadRequest, err.Error()))
 		return
 	}
 
-	partyId, err := strconv.ParseUint(gtx.Param("party_id"), 10, 32)
+	partyId, err := strconv.Atoi(gtx.Param("party_id"))
 	if err != nil {
 		_ = ricardoErr.GinErrorHandler(gtx, ricardoErr.New(ricardoErr.ErrBadRequest, "invalid ID format"))
 		return
@@ -110,6 +111,8 @@ func (c controller) Update(gtx *gin.Context) {
 // @Failure 400 {object} ricardoErr.RicardoError
 // @Router /parties [GET]
 func (c controller) Get(gtx *gin.Context) {
+	log.Println(gtx.Get("sub"))
+
 	parties, err := c.service.GetAll(gtx.Request.Context())
 	if err != nil {
 		_ = ricardoErr.GinErrorHandler(gtx, ricardoErr.New(ricardoErr.ErrBadRequest, ""))
@@ -172,19 +175,19 @@ func (c controller) GetOne(gtx *gin.Context) {
 // @Failure 400 {object} ricardoErr.RicardoError
 // @Router /parties/{party_id} [DELETE]
 func (c controller) Delete(gtx *gin.Context) {
-	var dpr entities.DeletePartyRequest
-	err := gtx.ShouldBindJSON(&dpr)
+	partyId, err := strconv.ParseUint(gtx.Param("party_id"), 10, 32)
 	if err != nil {
-		_ = ricardoErr.GinErrorHandler(gtx, ricardoErr.New(ricardoErr.ErrBadRequest, ""))
+		_ = ricardoErr.GinErrorHandler(gtx, ricardoErr.New(ricardoErr.ErrBadRequest, "invalid ID format"))
+		return
+	}
+	uintPartyId := uint(partyId)
+
+	_, err = c.canUpdateOrDelete(gtx, uintPartyId)
+	if err != nil {
 		return
 	}
 
-	_, err = c.canUpdateOrDelete(gtx, dpr.ID)
-	if err != nil {
-		return
-	}
-
-	err = c.service.Delete(gtx.Request.Context(), dpr.ID)
+	err = c.service.Delete(gtx.Request.Context(), uintPartyId)
 	if err != nil {
 		_ = ricardoErr.GinErrorHandler(gtx, err)
 		return
@@ -200,17 +203,11 @@ func (c controller) canUpdateOrDelete(gtx *gin.Context, partyID uint) (bool, err
 		return false, err
 	}
 
-	strToken, err := tokens.ExtractTokenFromHeader(gtx.GetHeader(tokens.AuthorizationHeader))
-	if err != nil {
-		_ = ricardoErr.GinErrorHandler(gtx, err)
-		return false, err
-	}
+	userID, _ := gtx.Get(tokens.UserIDKey)
+	pToken, _ := tokens.ParseFromGinContext(gtx, c.accessSecret)
+	claims, _ := tokens.Claims(pToken)
 
-	pToken, err := tokens.Parse(strToken, c.accessSecret)
-	claims := pToken.Claims.(tokens.RicardoClaims)
-	userID, err := strconv.ParseUint(claims.Subject, 10, 64)
-
-	if uint(userID) != p.UserID && claims.Role != tokens.AdminRole {
+	if userID.(uint) != p.UserID && tokens.IsAdmin(*claims) {
 		err = errors.New("unauthorized to update or delete")
 		_ = ricardoErr.GinErrorHandler(gtx, err)
 		return false, err

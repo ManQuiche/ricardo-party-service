@@ -3,7 +3,7 @@ package boot
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	tokens "gitlab.com/ricardo-public/jwt-tools/pkg"
+	tokens "gitlab.com/ricardo-public/jwt-tools/v2/pkg/token"
 	"gitlab.com/ricardo134/party-service/internal/driving/http/party"
 	"log"
 	"net/http"
@@ -40,8 +40,8 @@ func initRoutes() {
 	partyGroup.GET("/user/:user_id", tokenMiddleware.Authorize, partyController.GetForUser)
 	partyGroup.GET("/:party_id", tokenMiddleware.Authorize, partyController.GetOne)
 	partyGroup.POST("", tokenMiddleware.Authorize, partyController.Create)
-	partyGroup.PATCH("", tokenMiddleware.Authorize, partyController.Update)
-	partyGroup.DELETE("", tokenMiddleware.Authorize, partyController.Delete)
+	partyGroup.PATCH("/:party_id", tokenMiddleware.Authorize, partyController.Update)
+	partyGroup.DELETE("/:party_id", tokenMiddleware.Authorize, partyController.Delete)
 }
 
 func ServeHTTP() {
