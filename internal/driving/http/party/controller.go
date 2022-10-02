@@ -7,7 +7,6 @@ import (
 	tokens "gitlab.com/ricardo-public/jwt-tools/v2/pkg/token"
 	"gitlab.com/ricardo134/party-service/internal/core/app"
 	"gitlab.com/ricardo134/party-service/internal/core/entities"
-	"gorm.io/gorm"
 	"log"
 	"net/http"
 	"strconv"
@@ -88,9 +87,7 @@ func (c controller) Update(gtx *gin.Context) {
 	}
 
 	p := entities.Party{
-		Model: gorm.Model{
-			ID: uintPartyId,
-		},
+		ID:     uintPartyId,
 		Name:   upr.Name,
 		UserID: upr.UserID,
 	}

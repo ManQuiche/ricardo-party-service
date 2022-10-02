@@ -7,12 +7,16 @@ import (
 )
 
 type Party struct {
-	gorm.Model
+	ID      uint      `json:"id" gorm:"primarykey"`
 	Name    string    `json:"name,omitempty"`
 	UserID  uint      `json:"user_id,omitempty"`
 	User    User      `json:"-"`
 	Time    time.Time `json:"time,omitempty"`
 	Members []User    `json:"members,omitempty" gorm:"many2many:party_members;"`
+
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
+	DeletedAt gorm.DeletedAt `json:"deleted_at" gorm:"index"`
 }
 
 func (p *Party) MarshalJSON() ([]byte, error) {

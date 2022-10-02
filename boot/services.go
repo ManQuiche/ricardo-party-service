@@ -7,7 +7,6 @@ import (
 	"log"
 
 	"gitlab.com/ricardo134/party-service/internal/driven/db/cockroachdb"
-	"gitlab.com/ricardo134/party-service/internal/driving/async"
 	natsext "gitlab.com/ricardo134/party-service/internal/driving/async/nats"
 )
 
@@ -16,7 +15,7 @@ var (
 	userService  app.UserService
 
 	natsEncConn  *nats.EncodedConn
-	asyncHandler async.Handler
+	asyncHandler natsext.Handler
 )
 
 func LoadServices() {
@@ -32,5 +31,5 @@ func LoadServices() {
 	userRepo := cockroachdb.NewUserRepository(client)
 	userService = app.NewUserService(userRepo)
 
-	asyncHandler = natsext.NewNatsUserHandler(partyService, userService)
+	asyncHandler = natsext.NewUserHandler(partyService, userService)
 }
