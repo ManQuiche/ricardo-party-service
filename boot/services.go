@@ -6,7 +6,7 @@ import (
 	"gitlab.com/ricardo134/party-service/internal/core/app"
 	"log"
 
-	"gitlab.com/ricardo134/party-service/internal/driven/db/cockroachdb"
+	"gitlab.com/ricardo134/party-service/internal/driven/db/postgresql"
 	natsext "gitlab.com/ricardo134/party-service/internal/driving/async/nats"
 )
 
@@ -25,10 +25,10 @@ func LoadServices() {
 	}
 	natsEncConn, err = nats.NewEncodedConn(natsConn, nats.JSON_ENCODER)
 
-	partyRepo := cockroachdb.NewPartyRepository(client)
+	partyRepo := postgresql.NewPartyRepository(client)
 	partyService = app.NewPartyService(partyRepo)
 
-	userRepo := cockroachdb.NewUserRepository(client)
+	userRepo := postgresql.NewUserRepository(client)
 	userService = app.NewUserService(userRepo)
 
 	asyncHandler = natsext.NewUserHandler(partyService, userService)
