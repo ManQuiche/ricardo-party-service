@@ -7,12 +7,13 @@ import (
 )
 
 type Party struct {
-	ID      uint      `json:"id" gorm:"primarykey"`
-	Name    string    `json:"name,omitempty"`
-	UserID  uint      `json:"user_id,omitempty"`
-	User    User      `json:"-"`
-	Time    time.Time `json:"time,omitempty"`
-	Members []User    `json:"members,omitempty" gorm:"many2many:party_members;"`
+	ID          uint      `json:"id" gorm:"primarykey"`
+	Name        string    `json:"name,omitempty"`
+	Description string    `json:"description,omitempty"`
+	UserID      uint      `json:"user_id,omitempty"`
+	User        User      `json:"user,omitempty" gorm:"foreignKey:UserID;references:ID"`
+	Time        time.Time `json:"datetime,omitempty"`
+	Members     []User    `json:"members,omitempty" gorm:"many2many:party_members;"`
 
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
@@ -23,7 +24,7 @@ func (p *Party) MarshalJSON() ([]byte, error) {
 	type Alias Party
 	return json.Marshal(&struct {
 		*Alias
-		Time string `json:"time,omitempty"`
+		Time string `json:"datetime,omitempty"`
 	}{
 		Alias: (*Alias)(p),
 		Time:  p.Time.Format(time.RFC3339),
@@ -31,10 +32,10 @@ func (p *Party) MarshalJSON() ([]byte, error) {
 }
 
 type CreatePartyRequest struct {
-	Name   string `json:"name,omitempty" binding:"required"`
-	UserID uint   `json:"user_id,omitempty" binding:"required"`
+	Name        string `json:"name,omitempty" binding:"required"`
+	Description string `json:"description,omitempty"`
 	// RFC3339 formatted datetime
-	Time time.Time `json:"time,omitempty" binding:"required"`
+	Time time.Time `json:"datetime,omitempty" binding:"required"`
 }
 
 // TODO: inspect

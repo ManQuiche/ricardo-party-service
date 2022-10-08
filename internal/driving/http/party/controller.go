@@ -44,10 +44,13 @@ func (c controller) Create(gtx *gin.Context) {
 		_ = ricardoErr.GinErrorHandler(gtx, ricardoErr.New(ricardoErr.ErrBadRequest, err.Error()))
 		return
 	}
+	userID, _ := gtx.Get(tokens.UserIDKey)
+
 	p := entities.Party{
-		Name:   cpr.Name,
-		UserID: cpr.UserID,
-		Time:   cpr.Time,
+		Name:        cpr.Name,
+		UserID:      userID.(uint),
+		Time:        cpr.Time,
+		Description: cpr.Description,
 	}
 	cParty, err := c.service.Save(gtx.Request.Context(), p)
 	if err != nil {
