@@ -1,12 +1,13 @@
 include:
-#  - template: Security/SAST.gitlab-ci.yml
   - project: 'ricardo134/ci-includes'
     ref: master
     file:
-    - 'go/latest-test.yml'
-    - 'go/publish.yml'
+      - 'go/latest-test.yml'
+      - 'go/publish.yml'
+      - 'go/latest-doc.yml'
 
 
 stages:
-- test
-- publish
+  - test
+  - publish
+  - doc
