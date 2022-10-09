@@ -9,7 +9,7 @@ import (
 type Party struct {
 	ID          uint      `json:"id" gorm:"primarykey"`
 	Name        string    `json:"name"`
-	Description string    `json:"description,omitempty"`
+	Description string    `json:"description"`
 	UserID      uint      `json:"user_id"`
 	User        User      `json:"user,omitempty" gorm:"foreignKey:UserID;references:ID"`
 	Time        time.Time `json:"datetime"`
@@ -34,7 +34,7 @@ func (p *Party) MarshalJSON() ([]byte, error) {
 
 type CreatePartyRequest struct {
 	Name        string `json:"name,omitempty" binding:"required"`
-	Description string `json:"description,omitempty"`
+	Description string `json:"description"`
 	// RFC3339 formatted datetime
 	Time     time.Time `json:"datetime,omitempty" binding:"required"`
 	Location string    `json:"location"`
@@ -67,7 +67,7 @@ type CreatePartyRequest struct {
 //}
 
 type UpdatePartyRequest struct {
-	Name        string `json:"name,omitempty"`
-	Description string `json:"description,omitempty"`
-	Location    string `json:"location,omitempty"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Location    string `json:"location"`
 }
