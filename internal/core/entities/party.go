@@ -8,12 +8,13 @@ import (
 
 type Party struct {
 	ID          uint      `json:"id" gorm:"primarykey"`
-	Name        string    `json:"name,omitempty"`
+	Name        string    `json:"name"`
 	Description string    `json:"description,omitempty"`
-	UserID      uint      `json:"user_id,omitempty"`
+	UserID      uint      `json:"user_id"`
 	User        User      `json:"user,omitempty" gorm:"foreignKey:UserID;references:ID"`
-	Time        time.Time `json:"datetime,omitempty"`
+	Time        time.Time `json:"datetime"`
 	Members     []User    `json:"members,omitempty" gorm:"many2many:party_members;"`
+	Location    string    `json:"location"`
 
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
@@ -35,7 +36,8 @@ type CreatePartyRequest struct {
 	Name        string `json:"name,omitempty" binding:"required"`
 	Description string `json:"description,omitempty"`
 	// RFC3339 formatted datetime
-	Time time.Time `json:"datetime,omitempty" binding:"required"`
+	Time     time.Time `json:"datetime,omitempty" binding:"required"`
+	Location string    `json:"location"`
 }
 
 // TODO: inspect
@@ -64,12 +66,8 @@ type CreatePartyRequest struct {
 //	return nil
 //}
 
-type GetPartyRequest struct {
-	PartyID uint `json:"party_id,omitempty"`
-	UserID  uint `json:"user_id,omitempty"`
-}
-
 type UpdatePartyRequest struct {
-	Name   string `json:"name,omitempty" binding:"required"`
-	UserID uint   `json:"user_id,omitempty" binding:"required"`
+	Name        string `json:"name,omitempty"`
+	Description string `json:"description,omitempty"`
+	Location    string `json:"location,omitempty"`
 }
