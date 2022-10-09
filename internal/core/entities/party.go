@@ -37,7 +37,7 @@ type CreatePartyRequest struct {
 	Description string `json:"description"`
 	// RFC3339 formatted datetime
 	Time     time.Time `json:"datetime,omitempty" binding:"required"`
-	Location string    `json:"location"`
+	Location string    `json:"location" binding:"required"`
 }
 
 // TODO: inspect
