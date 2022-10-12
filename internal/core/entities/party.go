@@ -67,7 +67,7 @@ type CreatePartyRequest struct {
 //}
 
 type UpdatePartyRequest struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Location    string `json:"location"`
+	Name        string `json:"name" binding:"required"`
+	Description string `json:"description" binding:"required"`
+	Location    string `json:"location" binding:"required"`
 }
