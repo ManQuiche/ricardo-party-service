@@ -50,6 +50,7 @@ func (c controller) Create(gtx *gin.Context) {
 		UserID:      userID.(uint),
 		Time:        cpr.Time,
 		Description: cpr.Description,
+		Location:    cpr.Location,
 	}
 	cParty, err := c.service.Save(gtx.Request.Context(), p)
 	if err != nil {
