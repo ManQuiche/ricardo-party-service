@@ -191,8 +191,8 @@ gitlab.com/ricardo-public/errors v1.0.4 h1:vsQN5x6IyA1W/0zgEP/T5BB1SaeGO9oPaYXbu
 gitlab.com/ricardo-public/errors v1.0.4/go.mod h1:yK247M2lKZoapVm8CMQ1lm1utfG3Kv7gH4g6xoPgwSY=
 gitlab.com/ricardo-public/jwt-tools/v2 v2.2.3 h1:rU+41pYKz/csDVOCfJScM4ifE+9HJ7n2muqKm33uybI=
 gitlab.com/ricardo-public/jwt-tools/v2 v2.2.3/go.mod h1:kKzgfK4QHXp9ahQjrOfHai+7QWIJPTtJknkrCf10PKs=
-gitlab.com/ricardo-public/tracing v0.3.0 h1:82vMwPwZl5hv5QdnHiSOB4igYQh1C3ZcfcAbdwOQPp8=
-gitlab.com/ricardo-public/tracing v0.3.0/go.mod h1:4VchGpAkBs38cI4SnGztA0IXKQ/SFipCFiCW3QByz9Q=
+gitlab.com/ricardo-public/tracing v0.4.0 h1:K1vf6tEt2T/t821/zSMdF7mrHsPG0s2n3cIOxwiVt0Q=
+gitlab.com/ricardo-public/tracing v0.4.0/go.mod h1:4VchGpAkBs38cI4SnGztA0IXKQ/SFipCFiCW3QByz9Q=
 go.opentelemetry.io/otel v1.11.0 h1:kfToEGMDq6TrVrJ9Vht84Y8y9enykSZzDDZglV0kIEk=
 go.opentelemetry.io/otel v1.11.0/go.mod h1:H2KtuEphyMvlhZ+F7tg9GRhAOe60moNx61Ex+WmiKkk=
 go.opentelemetry.io/otel/exporters/jaeger v1.11.0 h1:Sv2valcFfMlfu6g8USSS+ZUN5vwbuGj1aY/CFtMG33w=
