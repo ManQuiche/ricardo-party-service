@@ -68,7 +68,7 @@ func (c controller) Create(gtx *gin.Context) {
 // @Param party body entities.UpdatePartyRequest true "Updated party info"
 // @Success 200 {object} entities.Party
 // @Failure 400 {object} ricardoErr.RicardoError
-// @Router /parties/{party_id} [PATCH]
+// @Router /parties/{party_id} [PUT]
 func (c controller) Update(gtx *gin.Context) {
 	var upr entities.UpdatePartyRequest
 	err := gtx.ShouldBindJSON(&upr)
@@ -174,7 +174,7 @@ func (c controller) GetOne(gtx *gin.Context) {
 // @Failure 400 {object} ricardoErr.RicardoError
 // @Router /parties/{party_id} [DELETE]
 func (c controller) Delete(gtx *gin.Context) {
-	partyId, err := strconv.ParseUint(gtx.Param("party_id"), 10, 32)
+	partyId, err := strconv.ParseUint(gtx.Param("party_id"), 10, 64)
 	if err != nil {
 		_ = ricardoErr.GinErrorHandler(gtx, ricardoErr.New(ricardoErr.ErrBadRequest, "invalid ID format"))
 		return

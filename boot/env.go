@@ -25,6 +25,8 @@ var (
 	natsUserDeleted string
 
 	debug bool
+
+	tracingEndpoint string
 )
 
 func LoadEnv() {
@@ -45,6 +47,8 @@ func LoadEnv() {
 	natsUserCreated = env("NATS_USER_CREATED")
 	natsUserUpdated = env("NATS_USER_UPDATED")
 	natsUserDeleted = env("NATS_USER_DELETED")
+
+	tracingEndpoint = env("TRACING_ENDPOINT")
 }
 
 func envBool(name string) bool {
