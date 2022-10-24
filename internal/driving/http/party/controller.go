@@ -7,6 +7,7 @@ import (
 	tokens "gitlab.com/ricardo-public/jwt-tools/v2/pkg/token"
 	"gitlab.com/ricardo134/party-service/internal/core/app"
 	"gitlab.com/ricardo134/party-service/internal/core/entities"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -43,7 +44,12 @@ func (c controller) Create(gtx *gin.Context) {
 		_ = ricardoErr.GinErrorHandler(gtx, ricardoErr.New(ricardoErr.ErrBadRequest, err.Error()))
 		return
 	}
-	userID, _ := gtx.Get(tokens.UserIDKey)
+
+	userID, ok := gtx.Get(tokens.UserIDKey)
+	if !ok {
+		err = errors.New("cannot retrieve token from gin context")
+		log.Println(err)
+	}
 
 	p := entities.Party{
 		Name:        cpr.Name,
@@ -89,14 +95,17 @@ func (c controller) Update(gtx *gin.Context) {
 		return
 	}
 
-	p := entities.Party{
-		ID:          uintPartyId,
-		Name:        upr.Name,
-		Description: upr.Description,
-		Location:    upr.Location,
+	parties, err := c.service.Get(gtx.Request.Context(), uint(partyId))
+	if err != nil {
+		_ = ricardoErr.GinErrorHandler(gtx, err)
+		return
 	}
 
-	uParty, err := c.service.Save(gtx.Request.Context(), p)
+	parties.Name = upr.Name
+	parties.Description = upr.Description
+	parties.Location = upr.Location
+
+	uParty, err := c.service.Save(gtx.Request.Context(), *parties)
 	if err != nil {
 		_ = ricardoErr.GinErrorHandler(gtx, err)
 		return
