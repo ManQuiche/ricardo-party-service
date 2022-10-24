@@ -7,6 +7,7 @@ func main() {
 	boot.LoadDb()
 	boot.LoadServices()
 	boot.ListenEvents()
+	boot.LoadTracing()
 
 	boot.ServeHTTP()
 }
