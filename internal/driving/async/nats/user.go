@@ -40,7 +40,10 @@ func (nh handler) Created(awt tracing.AnyWithTrace[entities.User]) {
 	nctx, span := tracing.Tracer.Start(ctx, "nats.UserHandler.Created")
 	defer span.End()
 
-	_, _ = nh.userService.Save(nctx, awt.Any)
+	_, _ = nh.userService.Save(nctx, entities.User{
+		ID:       awt.Any.ID,
+		Username: awt.Any.Username,
+	})
 }
 
 func (nh handler) Updated(awt tracing.AnyWithTrace[entities.User]) {
@@ -57,7 +60,10 @@ func (nh handler) Updated(awt tracing.AnyWithTrace[entities.User]) {
 	nctx, span := tracing.Tracer.Start(ctx, "nats.UserHandler.Updated")
 	defer span.End()
 
-	_, _ = nh.userService.Save(nctx, awt.Any)
+	_, _ = nh.userService.Save(nctx, entities.User{
+		ID:       awt.Any.ID,
+		Username: awt.Any.Username,
+	})
 }
 
 func (nh handler) Deleted(awt tracing.AnyWithTrace[uint]) {
