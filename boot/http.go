@@ -32,7 +32,7 @@ var (
 func initRoutes() {
 	router.Use(func(gtx *gin.Context) {
 		ctx, span := tracing.Tracer.Start(gtx.Request.Context(), fmt.Sprintf("%s %s", gtx.Request.Method, gtx.FullPath()))
-		log.Printf("traceID: %s", span.SpanContext().TraceID())
+		log.Printf("traceID=%s", span.SpanContext().TraceID())
 		span.SetAttributes(semconv.HTTPURLKey.String(gtx.Request.URL.String()))
 		gtx.Request = gtx.Request.WithContext(context.WithValue(ctx, "span", span))
 		gtx.Next()
