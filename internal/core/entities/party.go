@@ -11,7 +11,7 @@ type Party struct {
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	UserID      uint      `json:"user_id"`
-	User        User      `json:"user,omitempty" gorm:"foreignKey:UserID;references:ID"`
+	User        User      `json:"-" gorm:"foreignKey:UserID;references:ID"`
 	Time        time.Time `json:"datetime"`
 	Members     []User    `json:"members,omitempty" gorm:"many2many:party_members;"`
 	Location    string    `json:"location"`
