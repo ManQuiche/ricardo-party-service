@@ -5,8 +5,13 @@ import (
 	"github.com/gin-gonic/gin"
 	ricardoErr "gitlab.com/ricardo-public/errors/pkg/errors"
 	tokens "gitlab.com/ricardo-public/jwt-tools/v2/pkg/token"
+	"gitlab.com/ricardo-public/tracing/pkg/tracing"
 	"gitlab.com/ricardo134/party-service/internal/core/app"
 	"gitlab.com/ricardo134/party-service/internal/core/entities"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
+	semconv "go.opentelemetry.io/otel/semconv/v1.12.0"
+	"go.opentelemetry.io/otel/trace"
 	"log"
 	"net/http"
 	"strconv"
@@ -38,9 +43,16 @@ func NewController(service app.PartyService, accessSecret []byte) Controller {
 // @Failure 400 {object} ricardoErr.RicardoError
 // @Router /parties [post]
 func (c controller) Create(gtx *gin.Context) {
+	span := gtx.Request.Context().Value(tracing.HttpSpanKey).(trace.Span)
+	var err error
+	defer span.End()
+
 	var cpr entities.CreatePartyRequest
-	err := gtx.ShouldBindJSON(&cpr)
+	err = gtx.ShouldBindJSON(&cpr)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		span.SetAttributes(semconv.HTTPStatusCodeKey.String(strconv.Itoa(http.StatusBadRequest)))
 		_ = ricardoErr.GinErrorHandler(gtx, ricardoErr.New(ricardoErr.ErrBadRequest, err.Error()))
 		return
 	}
@@ -48,6 +60,9 @@ func (c controller) Create(gtx *gin.Context) {
 	userID, ok := gtx.Get(tokens.UserIDKey)
 	if !ok {
 		err = errors.New("cannot retrieve token from gin context")
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		span.SetAttributes(semconv.HTTPStatusCodeKey.String(strconv.Itoa(http.StatusBadRequest)))
 		log.Println(err)
 	}
 
@@ -60,6 +75,7 @@ func (c controller) Create(gtx *gin.Context) {
 	}
 	cParty, err := c.service.Save(gtx.Request.Context(), p)
 	if err != nil {
+		span.SetAttributes(semconv.HTTPStatusCodeKey.String(strconv.Itoa(http.StatusInternalServerError)))
 		_ = ricardoErr.GinErrorHandler(gtx, err)
 		return
 	}
@@ -76,27 +92,39 @@ func (c controller) Create(gtx *gin.Context) {
 // @Failure 400 {object} ricardoErr.RicardoError
 // @Router /parties/{party_id} [PUT]
 func (c controller) Update(gtx *gin.Context) {
+	span := gtx.Request.Context().Value(tracing.HttpSpanKey).(trace.Span)
+	defer span.End()
+
 	var upr entities.UpdatePartyRequest
 	err := gtx.ShouldBindJSON(&upr)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		span.SetAttributes(semconv.HTTPStatusCodeKey.String(strconv.Itoa(http.StatusBadRequest)))
 		_ = ricardoErr.GinErrorHandler(gtx, ricardoErr.New(ricardoErr.ErrBadRequest, err.Error()))
 		return
 	}
 
 	partyId, err := strconv.Atoi(gtx.Param("party_id"))
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		span.SetAttributes(semconv.HTTPStatusCodeKey.String(strconv.Itoa(http.StatusBadRequest)))
 		_ = ricardoErr.GinErrorHandler(gtx, ricardoErr.New(ricardoErr.ErrBadRequest, "invalid ID format"))
 		return
 	}
 	uintPartyId := uint(partyId)
 
-	_, err = c.canUpdateOrDelete(gtx, uintPartyId)
+	_, err = c.canUpdateOrDelete(gtx, uintPartyId, span)
 	if err != nil {
+		span.SetAttributes(semconv.HTTPStatusCodeKey.String(strconv.Itoa(http.StatusForbidden)))
+		_ = ricardoErr.GinErrorHandler(gtx, err)
 		return
 	}
 
 	parties, err := c.service.Get(gtx.Request.Context(), uint(partyId))
 	if err != nil {
+		span.SetAttributes(semconv.HTTPStatusCodeKey.String(strconv.Itoa(http.StatusNotFound)))
 		_ = ricardoErr.GinErrorHandler(gtx, err)
 		return
 	}
@@ -107,6 +135,7 @@ func (c controller) Update(gtx *gin.Context) {
 
 	uParty, err := c.service.Save(gtx.Request.Context(), *parties)
 	if err != nil {
+		span.SetAttributes(semconv.HTTPStatusCodeKey.String(strconv.Itoa(http.StatusInternalServerError)))
 		_ = ricardoErr.GinErrorHandler(gtx, err)
 		return
 	}
@@ -183,20 +212,29 @@ func (c controller) GetOne(gtx *gin.Context) {
 // @Failure 400 {object} ricardoErr.RicardoError
 // @Router /parties/{party_id} [DELETE]
 func (c controller) Delete(gtx *gin.Context) {
+	span := gtx.Request.Context().Value(tracing.HttpSpanKey).(trace.Span)
+	defer span.End()
+
 	partyId, err := strconv.ParseUint(gtx.Param("party_id"), 10, 64)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		span.SetAttributes(semconv.HTTPStatusCodeKey.String(strconv.Itoa(http.StatusBadRequest)))
 		_ = ricardoErr.GinErrorHandler(gtx, ricardoErr.New(ricardoErr.ErrBadRequest, "invalid ID format"))
 		return
 	}
 	uintPartyId := uint(partyId)
 
-	_, err = c.canUpdateOrDelete(gtx, uintPartyId)
+	_, err = c.canUpdateOrDelete(gtx, uintPartyId, span)
 	if err != nil {
+		span.SetAttributes(semconv.HTTPStatusCodeKey.String(strconv.Itoa(http.StatusForbidden)))
+		_ = ricardoErr.GinErrorHandler(gtx, err)
 		return
 	}
 
 	err = c.service.Delete(gtx.Request.Context(), uintPartyId)
 	if err != nil {
+		span.SetAttributes(semconv.HTTPStatusCodeKey.String(strconv.Itoa(http.StatusInternalServerError)))
 		_ = ricardoErr.GinErrorHandler(gtx, err)
 		return
 	}
@@ -204,10 +242,17 @@ func (c controller) Delete(gtx *gin.Context) {
 	gtx.Status(http.StatusOK)
 }
 
-func (c controller) canUpdateOrDelete(gtx *gin.Context, partyID uint) (bool, error) {
-	p, err := c.service.Get(gtx.Request.Context(), partyID)
+func (c controller) canUpdateOrDelete(gtx *gin.Context, partyID uint, span trace.Span) (bool, error) {
+	nctx, span := tracing.Tracer.Start(gtx.Request.Context(), "party.controller.canUpdateOrDelete")
+	defer span.End()
+
+	span.SetAttributes(attribute.Int("party.id", int(partyID)))
+
+	p, err := c.service.Get(nctx, partyID)
 	if err != nil {
-		_ = ricardoErr.GinErrorHandler(gtx, ricardoErr.New(ricardoErr.ErrBadRequest, ""))
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		_ = ricardoErr.GinErrorHandler(gtx, ricardoErr.New(ricardoErr.ErrNotFound, ""))
 		return false, err
 	}
 
@@ -215,8 +260,12 @@ func (c controller) canUpdateOrDelete(gtx *gin.Context, partyID uint) (bool, err
 	pToken, _ := tokens.ParseFromGinContext(gtx, c.accessSecret)
 	claims, _ := tokens.Claims(pToken)
 
+	span.SetAttributes(attribute.Int("user.id", userID.(int)))
+
 	if userID.(uint) != p.UserID && tokens.IsAdmin(*claims) {
 		err = errors.New("unauthorized to update or delete")
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		_ = ricardoErr.GinErrorHandler(gtx, err)
 		return false, err
 	}

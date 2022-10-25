@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"gitlab.com/ricardo-public/tracing/pkg/tracing"
 	"gitlab.com/ricardo134/party-service/internal/core/entities"
 	partyPort "gitlab.com/ricardo134/party-service/internal/core/ports"
 )
@@ -33,13 +34,22 @@ func (p partyService) GetAllForUser(ctx context.Context, userID uint) ([]entitie
 }
 
 func (p partyService) Save(ctx context.Context, party entities.Party) (*entities.Party, error) {
-	return p.repo.Save(ctx, party)
+	nctx, span := tracing.Tracer.Start(ctx, "app.partyService.Save")
+	defer span.End()
+
+	return p.repo.Save(nctx, party)
 }
 
 func (p partyService) Delete(ctx context.Context, partyID uint) error {
-	return p.repo.Delete(ctx, partyID)
+	nctx, span := tracing.Tracer.Start(ctx, "app.partyService.Delete")
+	defer span.End()
+
+	return p.repo.Delete(nctx, partyID)
 }
 
 func (p partyService) DeleteAllForUser(ctx context.Context, partyID uint) error {
-	return p.repo.Delete(ctx, partyID)
+	nctx, span := tracing.Tracer.Start(ctx, "app.partyService.DeleteAllForUser")
+	defer span.End()
+
+	return p.repo.Delete(nctx, partyID)
 }
