@@ -260,7 +260,7 @@ func (c controller) canUpdateOrDelete(gtx *gin.Context, partyID uint, span trace
 	pToken, _ := tokens.ParseFromGinContext(gtx, c.accessSecret)
 	claims, _ := tokens.Claims(pToken)
 
-	span.SetAttributes(attribute.Int("user.id", userID.(int)))
+	span.SetAttributes(attribute.Int("user.id", int(userID.(uint))))
 
 	if userID.(uint) != p.UserID && tokens.IsAdmin(*claims) {
 		err = errors.New("unauthorized to update or delete")
