@@ -14,8 +14,8 @@ var (
 	partyService app.PartyService
 	userService  app.UserService
 
-	natsEncConn  *nats.EncodedConn
-	asyncHandler natsext.Handler
+	natsEncConn *nats.EncodedConn
+	userAsync   natsext.UserHandler
 )
 
 func LoadServices() {
@@ -31,5 +31,5 @@ func LoadServices() {
 	userRepo := postgresql.NewUserRepository(client)
 	userService = app.NewUserService(userRepo)
 
-	asyncHandler = natsext.NewUserHandler(partyService, userService)
+	userAsync = natsext.NewUserHandler(partyService, userService)
 }

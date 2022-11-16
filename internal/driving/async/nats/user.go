@@ -11,22 +11,22 @@ import (
 	"log"
 )
 
-type handler struct {
+type userHandler struct {
 	partyService app.PartyService
 	userService  app.UserService
 }
 
-type Handler interface {
+type UserHandler interface {
 	Created(awt tracing.AnyWithTrace[entities.User])
 	Updated(awt tracing.AnyWithTrace[entities.User])
 	Deleted(awt tracing.AnyWithTrace[uint])
 }
 
-func NewUserHandler(partySvc app.PartyService, userSvc app.UserService) Handler {
-	return handler{partySvc, userSvc}
+func NewUserHandler(partySvc app.PartyService, userSvc app.UserService) UserHandler {
+	return userHandler{partySvc, userSvc}
 }
 
-func (nh handler) Created(awt tracing.AnyWithTrace[entities.User]) {
+func (nh userHandler) Created(awt tracing.AnyWithTrace[entities.User]) {
 	traceID, err := trace.TraceIDFromHex(awt.TraceID)
 	if err != nil {
 		log.Println(errors.Wrap(err, fmt.Sprintf("cannot parse traceID %s", awt.TraceID)).Error())
@@ -37,7 +37,7 @@ func (nh handler) Created(awt tracing.AnyWithTrace[entities.User]) {
 			TraceID: traceID,
 		},
 	))
-	nctx, span := tracing.Tracer.Start(ctx, "nats.UserHandler.Created")
+	nctx, span := tracing.Tracer.Start(ctx, "nats.UserHandler.UserCreated")
 	defer span.End()
 
 	_, _ = nh.userService.Save(nctx, entities.User{
@@ -46,7 +46,7 @@ func (nh handler) Created(awt tracing.AnyWithTrace[entities.User]) {
 	})
 }
 
-func (nh handler) Updated(awt tracing.AnyWithTrace[entities.User]) {
+func (nh userHandler) Updated(awt tracing.AnyWithTrace[entities.User]) {
 	traceID, err := trace.TraceIDFromHex(awt.TraceID)
 	if err != nil {
 		log.Println(errors.Wrap(err, fmt.Sprintf("cannot parse traceID %s", awt.TraceID)).Error())
@@ -66,7 +66,7 @@ func (nh handler) Updated(awt tracing.AnyWithTrace[entities.User]) {
 	})
 }
 
-func (nh handler) Deleted(awt tracing.AnyWithTrace[uint]) {
+func (nh userHandler) Deleted(awt tracing.AnyWithTrace[uint]) {
 	traceID, err := trace.TraceIDFromHex(awt.TraceID)
 	if err != nil {
 		log.Println(errors.Wrap(err, fmt.Sprintf("cannot parse traceID %s", awt.TraceID)).Error())
