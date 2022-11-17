@@ -17,12 +17,14 @@ var (
 	url          string
 	accessSecret string
 
-	natsURL         string
-	natsUsr         string
-	natsPwd         string
-	natsUserCreated string
-	natsUserUpdated string
-	natsUserDeleted string
+	natsURL            string
+	natsUsr            string
+	natsPwd            string
+	natsUserCreated    string
+	natsUserUpdated    string
+	natsUserDeleted    string
+	natsPartyRequested string
+	natsPartyJoined    string
 
 	debug bool
 
@@ -47,6 +49,8 @@ func LoadEnv() {
 	natsUserCreated = env("NATS_USER_CREATED")
 	natsUserUpdated = env("NATS_USER_UPDATED")
 	natsUserDeleted = env("NATS_USER_DELETED")
+	natsPartyRequested = env("NATS_PARTY_REQUESTED")
+	natsPartyJoined = env("NATS_PARTY_JOINED")
 
 	tracingEndpoint = env("TRACING_ENDPOINT")
 }

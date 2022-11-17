@@ -53,3 +53,10 @@ func (p partyService) DeleteAllForUser(ctx context.Context, partyID uint) error 
 
 	return p.repo.Delete(nctx, partyID)
 }
+
+func (p partyService) Joined(ctx context.Context, partyID, userID uint) error {
+	nctx, span := tracing.Tracer.Start(ctx, "app.partyService.Joined")
+	defer span.End()
+
+	return p.repo.Joined(nctx, partyID, userID)
+}

@@ -95,3 +95,27 @@ func (p partyRepository) DeleteAllForUser(ctx context.Context, userID uint) erro
 
 	return nil
 }
+
+func (p partyRepository) Joined(ctx context.Context, partyID, userID uint) error {
+	nctx, span := tracing.Tracer.Start(ctx, "postgres.partyRepository.Joined")
+	defer span.End()
+
+	span.SetAttributes(attribute.Int("user.id", int(userID)))
+	span.SetAttributes(attribute.Int("party.id", int(partyID)))
+
+	party, err := p.Get(nctx, partyID)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return notFoundOrElseError(err)
+	}
+
+	err = p.client.Omit("users.*").Model(party).Association("Members").Append(entities.User{ID: userID})
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return notFoundOrElseError(err)
+	}
+
+	return nil
+}
