@@ -16,6 +16,7 @@ var (
 
 	natsEncConn *nats.EncodedConn
 	userAsync   natsext.UserHandler
+	partyAsync  natsext.PartyHandler
 )
 
 func LoadServices() {
@@ -32,4 +33,5 @@ func LoadServices() {
 	userService = app.NewUserService(userRepo)
 
 	userAsync = natsext.NewUserHandler(partyService, userService)
+	partyAsync = natsext.NewPartyHandler(partyService)
 }

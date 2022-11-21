@@ -23,8 +23,10 @@ func NewPartyHandler(partySvc app.PartyService) PartyHandler {
 }
 
 func (p partyHandler) Joined(partyID, userID uint) {
-	//TODO implement me
-	panic("implement me")
+	err := p.partyService.Joined(context.Background(), partyID, userID)
+	if err != nil {
+		log.Print(err.Error())
+	}
 }
 
 func (p partyHandler) Requested(msg *nats.Msg) {
