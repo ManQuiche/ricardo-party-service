@@ -132,6 +132,7 @@ func (c controller) Update(gtx *gin.Context) {
 	parties.Name = upr.Name
 	parties.Description = upr.Description
 	parties.Location = upr.Location
+	parties.Time = upr.Time
 
 	uParty, err := c.service.Save(gtx.Request.Context(), *parties)
 	if err != nil {
