@@ -70,5 +70,5 @@ type UpdatePartyRequest struct {
 	Name        string    `json:"name" binding:"required"`
 	Description string    `json:"description"`
 	Location    string    `json:"location" binding:"required"`
-	Time        time.Time `json:"time" binding:"required"`
+	Time        time.Time `json:"datetime" binding:"required"`
 }
