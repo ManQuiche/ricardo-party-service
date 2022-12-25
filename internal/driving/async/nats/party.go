@@ -1,12 +1,12 @@
 package nats
 
 import (
-	"bytes"
 	"context"
-	"encoding/binary"
+	"encoding/json"
 	"github.com/nats-io/nats.go"
 	"gitlab.com/ricardo134/party-service/internal/core/app"
 	"log"
+	"strconv"
 )
 
 type partyHandler struct {
@@ -30,24 +30,25 @@ func (p partyHandler) Joined(partyID, userID uint) {
 }
 
 func (p partyHandler) Requested(msg *nats.Msg) {
-	var partyID uint
-	buf := bytes.NewReader(msg.Data)
-	err := binary.Read(buf, binary.BigEndian, &partyID)
+	var partyID int
+	partyID, err := strconv.Atoi(string(msg.Data))
 	if err != nil {
 		_ = msg.Respond(nil)
+		return
 	}
 
-	party, err := p.partyService.Get(context.Background(), partyID)
+	party, err := p.partyService.Get(context.Background(), uint(partyID))
 	if err != nil {
 		_ = msg.Respond(nil)
+		return
 	}
 
-	resbuf := new(bytes.Buffer)
-	err = binary.Write(resbuf, binary.BigEndian, party)
+	jsonParty, err := json.Marshal(party)
 	if err != nil {
 		log.Print(err.Error())
 		_ = msg.Respond(nil)
+		return
 	}
 
-	_ = msg.Respond(resbuf.Bytes())
+	_ = msg.Respond(jsonParty)
 }
