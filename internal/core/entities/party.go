@@ -72,3 +72,8 @@ type UpdatePartyRequest struct {
 	Location    string    `json:"location" binding:"required"`
 	Time        time.Time `json:"datetime" binding:"required"`
 }
+
+type JoinInfo struct {
+	PartyID uint `json:"party_id"`
+	UserID  uint `json:"user_id"`
+}

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"github.com/nats-io/nats.go"
 	"gitlab.com/ricardo134/party-service/internal/core/app"
+	"gitlab.com/ricardo134/party-service/internal/core/entities"
 	"log"
 	"strconv"
 )
@@ -14,7 +15,7 @@ type partyHandler struct {
 }
 
 type PartyHandler interface {
-	Joined(partyID, userID uint)
+	Joined(info entities.JoinInfo)
 	Requested(msg *nats.Msg)
 }
 
@@ -22,8 +23,8 @@ func NewPartyHandler(partySvc app.PartyService) PartyHandler {
 	return partyHandler{partySvc}
 }
 
-func (p partyHandler) Joined(partyID, userID uint) {
-	err := p.partyService.Joined(context.Background(), partyID, userID)
+func (p partyHandler) Joined(info entities.JoinInfo) {
+	err := p.partyService.Joined(context.Background(), info.PartyID, info.UserID)
 	if err != nil {
 		log.Print(err.Error())
 	}
