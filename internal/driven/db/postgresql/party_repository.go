@@ -110,7 +110,7 @@ func (p partyRepository) Joined(ctx context.Context, partyID, userID uint) error
 		return notFoundOrElseError(err)
 	}
 
-	err = p.client.Omit("users.*").Model(party).Association("Members").Append(entities.User{ID: userID})
+	err = p.client.Model(party).Association("Members").Append(&entities.User{ID: userID})
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
