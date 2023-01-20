@@ -9,7 +9,7 @@ require (
 	github.com/pkg/errors v0.8.1
 	gitlab.com/ricardo-public/errors v1.0.4
 	gitlab.com/ricardo-public/jwt-tools/v2 v2.2.3
-	gitlab.com/ricardo-public/tracing v0.4.0
+	gitlab.com/ricardo-public/tracing v0.7.0
 	go.opentelemetry.io/otel v1.11.0
 	go.opentelemetry.io/otel/trace v1.11.0
 	gorm.io/driver/postgres v1.3.1

@@ -1,13 +1,11 @@
 package boot
 
 import (
-	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	tokens "gitlab.com/ricardo-public/jwt-tools/v2/pkg/token"
-	"gitlab.com/ricardo-public/tracing/pkg/tracing"
+	gintracing "gitlab.com/ricardo-public/tracing/pkg/gin"
 	"gitlab.com/ricardo134/party-service/internal/driving/http/party"
-	semconv "go.opentelemetry.io/otel/semconv/v1.12.0"
 	"log"
 	"net/http"
 )
@@ -30,12 +28,7 @@ var (
 // @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
 
 func initRoutes() {
-	router.Use(func(gtx *gin.Context) {
-		ctx, span := tracing.Tracer.Start(gtx.Request.Context(), fmt.Sprintf("%s %s", gtx.Request.Method, gtx.FullPath()))
-		span.SetAttributes(semconv.HTTPURLKey.String(gtx.Request.URL.String()))
-		gtx.Request = gtx.Request.WithContext(context.WithValue(ctx, "span", span))
-		gtx.Next()
-	})
+	router.Use(gintracing.TraceRequest)
 
 	// Ready route
 	router.GET("/", func(context *gin.Context) {
